@@ -33,6 +33,9 @@ export default class App extends Component {
     const { loading, users, message } = this.state;
     return (
       <div className="App">
+        <form onSubmit={this.handleSubmit}>
+          <input type="submit" value="more data" />
+        </form>
         {!loading ? (
           users.map((user) => (
             <div className="app-container" key={user.id.value}>
@@ -41,9 +44,6 @@ export default class App extends Component {
               </h1>
               <h3>{user.email}</h3>
               <hr></hr>
-              <form onSubmit={this.handleSubmit}>
-                <input type="submit" value="more data" />
-              </form>
             </div>
           ))
         ) : (
