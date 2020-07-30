@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import axios from "axios";
+import Loading from "./Loading";
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
       loading: false,
+      message: "wait! Its Loading",
     };
+    // this.handleSubmit = this.handleSubmit.bind(this);
   }
   getUsers() {
     this.setState({
@@ -14,7 +17,7 @@ export default class App extends Component {
     });
     axios("https://api.randomuser.me/?nat=US&results=10").then((resp) =>
       this.setState({
-        users: resp.data.results,
+        users: [...this.state.users, ...resp.data.results],
         loading: false,
       })
     );
@@ -22,14 +25,30 @@ export default class App extends Component {
   componentWillMount() {
     this.getUsers();
   }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.getUsers();
+  };
   render() {
+    const { loading, users, message } = this.state;
     return (
-      <div>
-        {!this.state.loading
-          ? this.state.users.map((user) => (
-              <div> {user.name.first + " " + user.name.last}</div>
-            ))
-          : "Its Loading"}
+      <div className="App">
+        {!loading ? (
+          users.map((user) => (
+            <div className="app-container" key={user.id.value}>
+              <h1 style={{ color: "red" }}>
+                {user.name.first + " " + user.name.last}
+              </h1>
+              <h3>{user.email}</h3>
+              <hr></hr>
+              <form onSubmit={this.handleSubmit}>
+                <input type="submit" value="more data" />
+              </form>
+            </div>
+          ))
+        ) : (
+          <Loading message={message} second={loading} />
+        )}
       </div>
     );
   }
